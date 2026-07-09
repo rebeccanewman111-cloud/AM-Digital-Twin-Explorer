@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AM Digital Twin Explorer</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>AM Digital Twin Explorer</h1>
+        <p>CAD + experimental data viewer for additive manufacturing specimens</p>
+      </div>
+      <div class="top-actions">
+        <button id="themeToggle" class="secondary-btn">Toggle Theme</button>
+        <button id="screenshotBtn" class="primary-btn">Save Screenshot</button>
+      </div>
+    </header>
+
+    <aside class="sidebar left-panel">
+      <section class="panel">
+        <h2>Project Files</h2>
+        <label class="file-drop" for="modelInput">
+          <span>Upload STL / GLB</span>
+          <small>or use included specimen.stl</small>
+          <input id="modelInput" type="file" accept=".stl,.glb,.gltf" />
+        </label>
+        <label class="file-drop" for="dataInput">
+          <span>Upload CSV / JSON</span>
+          <small>or use included tensile_test.csv</small>
+          <input id="dataInput" type="file" accept=".csv,.json,.txt" />
+        </label>
+        <div id="fileList" class="file-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Viewer Controls</h2>
+        <div class="button-grid">
+          <button id="resetCameraBtn">Reset</button>
+          <button id="isoCameraBtn">Iso</button>
+          <button id="frontCameraBtn">Front</button>
+          <button id="topCameraBtn">Top</button>
+        </div>
+        <label class="switch-row"><input id="wireframeToggle" type="checkbox" /> Wireframe</label>
+        <label class="switch-row"><input id="autorotateToggle" type="checkbox" /> Auto-rotate</label>
+        <label class="switch-row"><input id="transparentToggle" type="checkbox" /> Transparent model</label>
+      </section>
+
+      <section class="panel">
+        <h2>Overlay</h2>
+        <select id="overlaySelect">
+          <option value="none">None</option>
+          <option value="force">Global force</option>
+          <option value="elongation">Global elongation</option>
+          <option value="strain">Engineering strain</option>
+          <option value="stress">Engineering stress</option>
+        </select>
+        <p class="note">These overlays are global experimental indicators, not local FEA stress fields.</p>
+        <div class="legend">
+          <span>Low</span><div class="legend-bar"></div><span>High</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Future Data Plug-ins</h2>
+        <ul class="compact-list">
+          <li>HDF5 sensor logs</li>
+          <li>SysML exports</li>
+          <li>FEA node stress maps</li>
+          <li>Thermal/porosity maps</li>
+        </ul>
+      </section>
+    </aside>
+
+    <main class="main-area">
+      <section class="viewer-card">
+        <div class="viewer-toolbar">
+          <div>
+            <strong id="viewerTitle">specimen.stl</strong>
+            <span id="viewerStatus">Loading default model...</span>
+          </div>
+          <button id="fullscreenBtn">Fullscreen Viewer</button>
+        </div>
+        <div id="viewerContainer" class="viewer-container"></div>
+      </section>
+
+      <section class="playback-card">
+        <div class="playback-header">
+          <div>
+            <h2>Experiment Playback</h2>
+            <p id="playbackStatus">Load data to replay measurements.</p>
+          </div>
+          <div class="playback-buttons">
+            <button id="playBtn">Play</button>
+            <button id="pauseBtn">Pause</button>
+          </div>
+        </div>
+        <input id="timelineSlider" type="range" min="0" max="0" value="0" />
+        <div id="currentPoint" class="current-point"></div>
+      </section>
+
+      <section class="charts-grid">
+        <article class="chart-card"><h3>Force vs Elongation</h3><canvas id="forceElongationChart"></canvas></article>
+        <article class="chart-card"><h3>Force vs Time</h3><canvas id="forceTimeChart"></canvas></article>
+        <article class="chart-card"><h3>Position vs Time</h3><canvas id="positionTimeChart"></canvas></article>
+        <article class="chart-card"><h3>Stress-Strain</h3><canvas id="stressStrainChart"></canvas></article>
+      </section>
+    </main>
+
+    <aside class="sidebar right-panel">
+      <section class="panel">
+        <h2>Experiment Summary</h2>
+        <div id="summaryText" class="summary-text">Waiting for data...</div>
+      </section>
+
+      <section class="panel">
+        <h2>Statistics</h2>
+        <div id="statsGrid" class="stats-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Metadata</h2>
+        <div id="metadataList" class="metadata-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Data Inspector</h2>
+        <input id="tableSearch" class="search-input" placeholder="Search rows..." />
+        <div id="dataTable" class="data-table"></div>
+      </section>
+    </aside>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

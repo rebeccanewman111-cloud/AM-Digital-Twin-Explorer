@@ -30,19 +30,19 @@
 
     <aside class="sidebar left-panel">
       <section class="panel">
-        <h2>Project Files</h2>
-        <label class="file-drop" for="modelInput">
-          <span>Upload STL / GLB</span>
-          <small>or use included specimen.stl</small>
-          <input id="modelInput" type="file" accept=".stl,.glb,.gltf" />
-        </label>
-        <label class="file-drop" for="dataInput">
-          <span>Upload CSV / JSON</span>
-          <small>or use included tensile_test.csv</small>
-          <input id="dataInput" type="file" accept=".csv,.json,.txt" />
-        </label>
-        <div id="fileList" class="file-list"></div>
-      </section>
+  <h2>Project Files</h2>
+
+  <label class="file-drop" for="partFolderInput">
+    <span>Choose Part Folder</span>
+    <small>Folder may contain manifest.json, CAD, and data files</small>
+    <input id="partFolderInput" type="file" webkitdirectory multiple />
+  </label>
+
+  <input id="modelInput" type="file" accept=".stl,.glb,.gltf" hidden />
+  <input id="dataInput" type="file" accept=".csv,.json,.txt" hidden />
+
+  <div id="fileList" class="file-list"></div>
+</section>
 
       <section class="panel">
         <h2>Viewer Controls</h2>
@@ -60,12 +60,19 @@
       <section class="panel">
         <h2>Overlay</h2>
         <select id="overlaySelect">
-          <option value="none">None</option>
-          <option value="force">Global force</option>
-          <option value="elongation">Global elongation</option>
-          <option value="strain">Engineering strain</option>
-          <option value="stress">Engineering stress</option>
-        </select>
+  <option value="none">None</option>
+  <option value="force">Force / Load if detected</option>
+  <option value="elongation">Elongation / Position if detected</option>
+  <option value="stress">Stress if detected</option>
+  <option value="strain">Strain if detected</option>
+  <option value="numeric1">Numeric Column 1</option>
+  <option value="numeric2">Numeric Column 2</option>
+  <option value="numeric3">Numeric Column 3</option>
+  <option value="numeric4">Numeric Column 4</option>
+</select>
+<p id="overlayReadout" class="note">
+  No overlay active.
+</p>
         <p class="note">These overlays are global experimental indicators, not local FEA stress fields.</p>
         <div class="legend">
           <span>Low</span><div class="legend-bar"></div><span>High</span>
@@ -133,6 +140,21 @@
         <h2>Metadata</h2>
         <div id="metadataList" class="metadata-list"></div>
       </section>
+
+      <section class="panel">
+  <h2>Column Mapping</h2>
+  <p class="note">
+    Choose which dataset columns represent engineering quantities.
+  </p>
+
+  <div id="columnMappingPanel" class="metadata-list">
+    Load a dataset to map columns.
+  </div>
+
+  <button id="applyColumnMappingBtn" class="primary-btn" type="button">
+    Apply Column Mapping
+  </button>
+</section>
 
       <section class="panel">
         <h2>Data Inspector</h2>
